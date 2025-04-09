@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EntityFrameworkCore.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,6 +49,7 @@ namespace EntityFrameworkCore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
                     JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -99,6 +100,7 @@ namespace EntityFrameworkCore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

@@ -8,7 +8,9 @@ namespace Repository.Models
         [MaxLength(100)]
         public string Name { get; set; }
 
+        
         [Required]
+        public int DepartmentId { get; set; }
         public Department Department { get; set; }
 
         [Required]

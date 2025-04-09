@@ -12,8 +12,8 @@ using Repository.Contexts;
 namespace EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(CompanyContext))]
-    [Migration("20250409082548_Initial")]
-    partial class Initial
+    [Migration("20250409105426_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,6 +87,9 @@ namespace EntityFrameworkCore.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("JoinedDate")
                         .HasColumnType("datetime2");
@@ -171,6 +174,9 @@ namespace EntityFrameworkCore.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");

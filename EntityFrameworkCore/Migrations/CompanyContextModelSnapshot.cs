@@ -85,6 +85,9 @@ namespace EntityFrameworkCore.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("JoinedDate")
                         .HasColumnType("datetime2");
 
@@ -168,6 +171,9 @@ namespace EntityFrameworkCore.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");

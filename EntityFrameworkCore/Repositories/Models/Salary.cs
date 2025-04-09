@@ -8,5 +8,6 @@ namespace Repository.Models
         public decimal Amount { get; set; }
 
         public Employee Employee { get; set; }
+        public int EmployeeId { get; set; }
     }
 }
