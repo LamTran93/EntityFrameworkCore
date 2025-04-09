@@ -1,6 +1,6 @@
-﻿namespace EntityFrameworkCore.Models
+﻿namespace Repository.Models
 {
-    public class ProjectEmployee
+    public class ProjectEmployee : BaseEntity
     {
         public Project Project { get; set; }
         public Employee Employee { get; set; }
