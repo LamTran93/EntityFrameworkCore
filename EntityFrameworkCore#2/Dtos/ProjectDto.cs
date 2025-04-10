@@ -2,29 +2,29 @@
 
 namespace EntityFrameworkCore_2.Dtos
 {
-    public class DepartmentDto
+    public class ProjectDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public DepartmentDto(Department department)
+        public ProjectDto(Project project)
         {
-            Id = department.Id;
-            Name = department.Name;
+            Id = project.Id;
+            Name = project.Name;
         }
 
-        public Department ToDepartment()
+        public Project ToProject()
         {
-            return new Department
+            return new Project
             {
                 Id = Id,
                 Name = Name
             };
         }
 
-        public Department ToDepartmentWithoutId()
+        public Project ToProjectWithoutId()
         {
-            return new Department
+            return new Project
             {
                 Name = Name
             };

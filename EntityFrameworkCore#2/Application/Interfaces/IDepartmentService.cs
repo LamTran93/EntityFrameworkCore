@@ -1,4 +1,4 @@
-﻿using Repositories.Models;
+﻿using EntityFrameworkCore_2.Domain.Models;
 
 namespace EntityFrameworkCore_2.Application.Interfaces
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Repositories.Models
+namespace EntityFrameworkCore_2.Domain.Models
 {
     public class Project : BaseEntity
     {
@@ -8,6 +8,6 @@ namespace Repositories.Models
         [MaxLength(100)]
         public string Name { get; set; }
 
-        public ICollection<Employee> Employees { get; set; }
+        public ICollection<ProjectEmployee> ProjectEmployees { get; set; }
     }
 }

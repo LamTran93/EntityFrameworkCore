@@ -1,4 +1,4 @@
-﻿using Repositories.Models;
+﻿using EntityFrameworkCore_2.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace EntityFrameworkCore_2.Dtos

@@ -2,8 +2,6 @@
 using EntityFrameworkCore_2.Dtos;
 using EntityFrameworkCore_2.Exeptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Models;
 
 namespace EntityFrameworkCore_2.Controllers
 {
@@ -75,32 +73,36 @@ namespace EntityFrameworkCore_2.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Department>> PostDepartment(Department department)
+        public async Task<ActionResult<DepartmentDto>> PostDepartment(DepartmentDto department)
         {
-            _context.Departments.Add(department);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetDepartment", new { id = department.Id }, department);
+            try
+            {
+                var createdDepartment = 
+                    await _service.AddDepartmentAsync(department.ToDepartment());
+                return CreatedAtAction("GetDepartment", new { id = createdDepartment.Id }, createdDepartment);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
-            if (department == null)
+            try
             {
-                return NotFound();
+                await _service.DeleteDepartmentAsync(id);
+                return NoContent();
             }
-
-            _context.Departments.Remove(department);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool DepartmentExists(int id)
-        {
-            return _context.Departments.Any(e => e.Id == id);
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

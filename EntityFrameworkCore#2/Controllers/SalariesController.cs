@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EntityFrameworkCore_2.Application.Interfaces;
+using EntityFrameworkCore_2.Dtos;
+using EntityFrameworkCore_2.Exeptions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Contexts;
 using Repositories.Models;
@@ -9,88 +12,100 @@ namespace EntityFrameworkCore_2.Controllers
     [ApiController]
     public class SalariesController : ControllerBase
     {
-        private readonly CompanyContext _context;
+        private readonly ISalariesService _service;
 
-        public SalariesController(CompanyContext context)
+        public SalariesController(ISalariesService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Salaries>>> GetSalaries()
+        public async Task<ActionResult<IEnumerable<SalariesDto>>> GetSalaries()
         {
-            return await _context.Salaries.ToListAsync();
+            try
+            {
+                var salaries = await _service.GetAllSalariesAsync();
+
+                return salaries.Select(s => new SalariesDto(s)).ToList();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Salaries>> GetSalary(int id)
+        public async Task<ActionResult<SalariesDto>> GetSalary(int id)
         {
-            var salary = await _context.Salaries.FindAsync(id);
-
-            if (salary == null)
+            try
+            {
+                var salary = await _service.GetSalariesByIdAsync(id);
+                return new SalariesDto(salary);
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }
-
-            return salary;
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSalary(int id, Salaries salary)
+        public async Task<IActionResult> PutSalary(int id, SalariesDto salary)
         {
             if (id != salary.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(salary).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.UpdateSalariesAsync(salary.ToSalaries());
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (NotFoundException ex)
             {
-                if (!SalaryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(ex.Message);
             }
-
-            return NoContent();
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<Salaries>> PostSalary(Salaries salary)
+        public async Task<ActionResult<SalariesDto>> PostSalary(SalariesDto salary)
         {
-            _context.Salaries.Add(salary);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetSalary", new { id = salary.Id }, salary);
+            try
+            {
+                var createdSalaries =
+                    await _service.AddSalariesAsync(salary.ToSalariesWithoutId());
+                return CreatedAtAction("GetSalaries", new { id = createdSalaries.Id }, createdSalaries);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSalary(int id)
         {
-            var salary = await _context.Salaries.FindAsync(id);
-            if (salary == null)
+            try
             {
-                return NotFound();
+                await _service.DeleteSalariesAsync(id);
+                return NoContent();
             }
-
-            _context.Salaries.Remove(salary);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool SalaryExists(int id)
-        {
-            return _context.Salaries.Any(e => e.Id == id);
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

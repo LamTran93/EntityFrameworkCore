@@ -1,8 +1,8 @@
 ﻿using EntityFrameworkCore_2.Application.Interfaces;
+using EntityFrameworkCore_2.Domain.Models;
 using EntityFrameworkCore_2.Exeptions;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Contexts;
-using Repositories.Models;
 
 namespace EntityFrameworkCore_2.Application
 {
@@ -34,14 +34,14 @@ namespace EntityFrameworkCore_2.Application
 
         public async Task DeleteDepartmentAsync(int id)
         {
-            var department = await _context.Departments.FindAsync(id) ?? throw new NotFoundException("Employee not found");
+            var department = await _context.Departments.FindAsync(id) ?? throw new NotFoundException($"Department {id} not found");
             _context.Departments.Remove(department);
             await _context.SaveChangesAsync();
         }
 
         public async Task<Department> UpdateDepartmentAsync(Department department)
         {
-            var existingDepartment = await _context.Departments.FindAsync(department.Id) ?? throw new NotFoundException("Department not found");
+            var existingDepartment = await _context.Departments.FindAsync(department.Id) ?? throw new NotFoundException($"Department {department.Id} not found");
             existingDepartment.Name = department.Name;
             _context.Departments.Update(existingDepartment);
             await _context.SaveChangesAsync();

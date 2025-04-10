@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Repositories.Models
+namespace EntityFrameworkCore_2.Domain.Models
 {
     public class Employee : BaseEntity
     {
@@ -13,7 +13,7 @@ namespace Repositories.Models
         public DateTime JoinedDate { get; set; }
 
         public Department Department { get; set; }
-        public ICollection<Project> Projects { get; set; }
+        public ICollection<ProjectEmployee> ProjectEmployees { get; set; }
         public Salaries Salary { get; set; }
     }
 }

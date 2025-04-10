@@ -1,4 +1,4 @@
-﻿namespace Repositories.Models
+﻿namespace EntityFrameworkCore_2.Domain.Models
 {
     public class ProjectEmployee : BaseEntity
     {

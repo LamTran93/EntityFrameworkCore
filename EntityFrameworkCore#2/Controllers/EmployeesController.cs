@@ -77,8 +77,9 @@ namespace EntityFrameworkCore_2.Controllers
         {
             try
             {
-                await _service.AddEmployeeAsync(employee.ToEmployeeWithoutId());
-                return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+                var createdEmployee = 
+                    await _service.AddEmployeeAsync(employee.ToEmployeeWithoutId());
+                return CreatedAtAction("GetEmployee", new { id = createdEmployee.Id }, createdEmployee);
             }
             catch (Exception)
             {
@@ -94,9 +95,9 @@ namespace EntityFrameworkCore_2.Controllers
                 await _service.DeleteEmployeeAsync(id);
                 return NoContent();
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
             catch (Exception)
             {

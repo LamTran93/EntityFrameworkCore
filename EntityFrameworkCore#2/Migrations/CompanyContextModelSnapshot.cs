@@ -47,7 +47,7 @@ namespace EntityFrameworkCore_2.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
 
                     b.HasData(
                         new
@@ -109,7 +109,7 @@ namespace EntityFrameworkCore_2.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Repositories.Models.Project", b =>
@@ -137,7 +137,7 @@ namespace EntityFrameworkCore_2.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("Repositories.Models.ProjectEmployee", b =>
@@ -200,7 +200,7 @@ namespace EntityFrameworkCore_2.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Salaries");
+                    b.ToTable("Salaries", (string)null);
                 });
 
             modelBuilder.Entity("Repositories.Models.Employee", b =>
@@ -217,13 +217,13 @@ namespace EntityFrameworkCore_2.Migrations
             modelBuilder.Entity("Repositories.Models.ProjectEmployee", b =>
                 {
                     b.HasOne("Repositories.Models.Employee", "Employee")
-                        .WithMany()
+                        .WithMany("ProjectEmployees")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Repositories.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("ProjectEmployees")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -251,8 +251,15 @@ namespace EntityFrameworkCore_2.Migrations
 
             modelBuilder.Entity("Repositories.Models.Employee", b =>
                 {
+                    b.Navigation("ProjectEmployees");
+
                     b.Navigation("Salary")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Repositories.Models.Project", b =>
+                {
+                    b.Navigation("ProjectEmployees");
                 });
 #pragma warning restore 612, 618
         }
