@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Repository.Contexts;
+using Repositories.Contexts;
 
 #nullable disable
 
 namespace EntityFrameworkCore_2.Migrations
 {
     [DbContext(typeof(CompanyContext))]
-    [Migration("20250409173121_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250410041211_InitiaCreate")]
+    partial class InitiaCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace EntityFrameworkCore_2.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Repository.Models.Department", b =>
+            modelBuilder.Entity("Repositories.Models.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,7 +34,9 @@ namespace EntityFrameworkCore_2.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -42,7 +44,9 @@ namespace EntityFrameworkCore_2.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.HasKey("Id");
 
@@ -79,14 +83,16 @@ namespace EntityFrameworkCore_2.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Repository.Models.Employee", b =>
+            modelBuilder.Entity("Repositories.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
@@ -100,14 +106,16 @@ namespace EntityFrameworkCore_2.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.HasKey("Id");
 
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("Repository.Models.Project", b =>
+            modelBuilder.Entity("Repositories.Models.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,7 +124,9 @@ namespace EntityFrameworkCore_2.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -124,14 +134,16 @@ namespace EntityFrameworkCore_2.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.HasKey("Id");
 
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("Repository.Models.ProjectEmployee", b =>
+            modelBuilder.Entity("Repositories.Models.ProjectEmployee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -140,7 +152,9 @@ namespace EntityFrameworkCore_2.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
@@ -152,7 +166,9 @@ namespace EntityFrameworkCore_2.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.HasKey("Id");
 
@@ -160,35 +176,39 @@ namespace EntityFrameworkCore_2.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("ProjectEmployees");
+                    b.ToTable("Project_Employee", (string)null);
                 });
 
-            modelBuilder.Entity("Repository.Models.Salary", b =>
+            modelBuilder.Entity("Repositories.Models.Salaries", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.HasKey("Id");
 
                     b.ToTable("Salaries");
                 });
 
-            modelBuilder.Entity("Repository.Models.Employee", b =>
+            modelBuilder.Entity("Repositories.Models.Employee", b =>
                 {
-                    b.HasOne("Repository.Models.Department", "Department")
+                    b.HasOne("Repositories.Models.Department", "Department")
                         .WithMany("Employees")
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -197,15 +217,15 @@ namespace EntityFrameworkCore_2.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("Repository.Models.ProjectEmployee", b =>
+            modelBuilder.Entity("Repositories.Models.ProjectEmployee", b =>
                 {
-                    b.HasOne("Repository.Models.Employee", "Employee")
+                    b.HasOne("Repositories.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Repository.Models.Project", "Project")
+                    b.HasOne("Repositories.Models.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -216,23 +236,23 @@ namespace EntityFrameworkCore_2.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("Repository.Models.Salary", b =>
+            modelBuilder.Entity("Repositories.Models.Salaries", b =>
                 {
-                    b.HasOne("Repository.Models.Employee", "Employee")
+                    b.HasOne("Repositories.Models.Employee", "Employee")
                         .WithOne("Salary")
-                        .HasForeignKey("Repository.Models.Salary", "Id")
+                        .HasForeignKey("Repositories.Models.Salaries", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("Repository.Models.Department", b =>
+            modelBuilder.Entity("Repositories.Models.Department", b =>
                 {
                     b.Navigation("Employees");
                 });
 
-            modelBuilder.Entity("Repository.Models.Employee", b =>
+            modelBuilder.Entity("Repositories.Models.Employee", b =>
                 {
                     b.Navigation("Salary")
                         .IsRequired();

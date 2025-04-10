@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Repository.Models
+namespace Repositories.Models
 {
     public class Salary : BaseEntity
     {
@@ -8,6 +8,5 @@ namespace Repository.Models
         public decimal Amount { get; set; }
 
         public Employee Employee { get; set; }
-        public int EmployeeId { get; set; }
     }
 }

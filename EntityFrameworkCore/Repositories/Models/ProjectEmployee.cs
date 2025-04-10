@@ -1,4 +1,4 @@
-﻿namespace Repository.Models
+﻿namespace Repositories.Models
 {
     public class ProjectEmployee : BaseEntity
     {

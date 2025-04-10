@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Repository.Contexts;
-using Repository.Models;
+﻿using EntityFrameworkCore_2.Application.Interfaces;
+using EntityFrameworkCore_2.Dtos;
+using EntityFrameworkCore_2.Exeptions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EntityFrameworkCore_2.Controllers
 {
@@ -9,88 +9,99 @@ namespace EntityFrameworkCore_2.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly CompanyContext _context;
+        private readonly IEmployeeService _service;
 
-        public EmployeesController(CompanyContext context)
+        public EmployeesController(IEmployeeService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployees()
         {
-            return await _context.Employees.ToListAsync();
+            try
+            {
+                var employees = await _service.GetAllEmployeesAsync();
+
+                return employees.Select(e => new EmployeeDto(e)).ToList();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        public async Task<ActionResult<EmployeeDto>> GetEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-
-            if (employee == null)
+            try
+            {
+                var employee = await _service.GetEmployeeByIdAsync(id);
+                return new EmployeeDto(employee);
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }
-
-            return employee;
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, Employee employee)
+        public async Task<IActionResult> PutEmployee(int id, EmployeeDto employee)
         {
             if (id != employee.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(employee).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.UpdateEmployeeAsync(employee.ToEmployee());
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (NotFoundException ex)
             {
-                if (!EmployeeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(ex.Message);
             }
-
-            return NoContent();
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<EmployeeDto>> PostEmployee(EmployeeDto employee)
         {
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            try
+            {
+                await _service.AddEmployeeAsync(employee.ToEmployeeWithoutId());
+                return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            } 
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            try
+            {
+                await _service.DeleteEmployeeAsync(id);
+                return NoContent();
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }
-
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool EmployeeExists(int id)
-        {
-            return _context.Employees.Any(e => e.Id == id);
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

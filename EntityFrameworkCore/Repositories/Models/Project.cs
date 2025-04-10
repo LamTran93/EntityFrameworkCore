@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Repository.Models
+namespace Repositories.Models
 {
     public class Project : BaseEntity
     {

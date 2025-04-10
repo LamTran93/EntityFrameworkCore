@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Repository.Models;
+using Repositories.Models;
 
-namespace Repository.Contexts
+namespace Repositories.Contexts
 {
     public class CompanyContext : DbContext
     {

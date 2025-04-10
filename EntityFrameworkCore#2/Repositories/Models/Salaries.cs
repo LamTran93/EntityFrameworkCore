@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Repository.Models
+namespace Repositories.Models
 {
-    public class Salary : BaseEntity
+    public class Salaries : BaseEntity
     {
         [Required]
-        public decimal Amount { get; set; }
+        public decimal Salary { get; set; }
 
         public Employee Employee { get; set; }
         public int EmployeeId { get; set; }

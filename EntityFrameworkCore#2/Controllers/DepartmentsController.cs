@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EntityFrameworkCore_2.Application.Interfaces;
+using EntityFrameworkCore_2.Dtos;
+using EntityFrameworkCore_2.Exeptions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Repository.Contexts;
-using Repository.Models;
+using Repositories.Models;
 
 namespace EntityFrameworkCore_2.Controllers
 {
@@ -9,59 +11,67 @@ namespace EntityFrameworkCore_2.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        private readonly CompanyContext _context;
+        private readonly IDepartmentService _service;
 
-        public DepartmentsController(CompanyContext context)
+        public DepartmentsController(IDepartmentService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
+        public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
         {
-            return await _context.Departments.ToListAsync();
+            try
+            {
+                var departments = await _service.GetAllDepartmentsAsync();
+
+                return departments.Select(d => new DepartmentDto(d)).ToList();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Department>> GetDepartment(int id)
+        public async Task<ActionResult<DepartmentDto>> GetDepartment(int id)
         {
-            var department = await _context.Departments.FindAsync(id);
-
-            if (department == null)
+            try
+            {
+                var department = await _service.GetDepartmentByIdAsync(id);
+                return new DepartmentDto(department);
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }
-
-            return department;
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartment(int id, Department department)
+        public async Task<IActionResult> PutDepartment(int id, DepartmentDto department)
         {
             if (id != department.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(department).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.UpdateDepartmentAsync(department.ToDepartment());
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (NotFoundException ex)
             {
-                if (!DepartmentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(ex.Message);
             }
-
-            return NoContent();
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPost]

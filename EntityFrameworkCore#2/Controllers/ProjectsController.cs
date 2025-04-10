@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Repository.Contexts;
-using Repository.Models;
+using Repositories.Contexts;
+using Repositories.Models;
 
 namespace EntityFrameworkCore_2.Controllers
 {

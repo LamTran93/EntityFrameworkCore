@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Repository.Models;
+using Repositories.Models;
 
-namespace Repository.Contexts
+namespace Repositories.Contexts
 {
     public class CompanyContext : DbContext
     {
@@ -11,7 +11,7 @@ namespace Repository.Contexts
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Project> Projects { get; set; }
-        public DbSet<Salary> Salaries { get; set; }
+        public DbSet<Salaries> Salaries { get; set; }
         public DbSet<ProjectEmployee> ProjectEmployees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,19 +21,53 @@ namespace Repository.Contexts
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.Salary)
                 .WithOne(s => s.Employee)
-                .HasForeignKey<Salary>(e => e.Id)
+                .HasForeignKey<Salaries>(e => e.Id)
                 .IsRequired();
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.CreatedAt)
+                .HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("getutcdate()");
 
             modelBuilder.Entity<Department>()
                 .HasMany(d => d.Employees)
                 .WithOne(e => e.Department)
                 .HasForeignKey(d => d.Id)
                 .IsRequired();
+            modelBuilder.Entity<Department>()
+                .Property(e => e.CreatedAt)
+                .HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<Department>()
+                .Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("getutcdate()");
 
             modelBuilder.Entity<Project>()
                 .HasMany(p => p.Employees)
                 .WithMany(e => e.Projects)
                 .UsingEntity(typeof(ProjectEmployee));
+            modelBuilder.Entity<Project>()
+                .Property(e => e.CreatedAt)
+                .HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<Project>()
+                .Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("getutcdate()");
+
+            modelBuilder.Entity<Salaries>()
+                .Property(e => e.CreatedAt)
+                .HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<Salaries>()
+                .Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("getutcdate()");
+
+            modelBuilder.Entity<ProjectEmployee>()
+                .ToTable("Project_Employee");
+            modelBuilder.Entity<ProjectEmployee>()
+                .Property(e => e.CreatedAt)
+                .HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<ProjectEmployee>()
+                .Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("getutcdate()");
 
             modelBuilder.Entity<Department>(
                 d => d.HasData(
@@ -45,22 +79,6 @@ namespace Repository.Contexts
                 );
         }
 
-        public override int SaveChanges()
-        {
-            foreach (var entry in base.ChangeTracker.Entries<BaseEntity>()
-                .Where(q => q.State == EntityState.Added || q.State == EntityState.Modified))
-            {
-                if (entry.State == EntityState.Added)
-                {
-                    entry.Entity.CreatedAt = DateTime.Now;
-                    entry.Entity.UpdatedAt = DateTime.Now;
-                }
-                if (entry.State == EntityState.Modified)
-                {
-                    entry.Entity.UpdatedAt = DateTime.Now;
-                }
-            }
-            return base.SaveChanges();
-        }
+        
     }
 }

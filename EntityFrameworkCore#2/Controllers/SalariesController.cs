@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Repository.Contexts;
-using Repository.Models;
+using Repositories.Contexts;
+using Repositories.Models;
 
 namespace EntityFrameworkCore_2.Controllers
 {
@@ -17,13 +17,13 @@ namespace EntityFrameworkCore_2.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Salary>>> GetSalaries()
+        public async Task<ActionResult<IEnumerable<Salaries>>> GetSalaries()
         {
             return await _context.Salaries.ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Salary>> GetSalary(int id)
+        public async Task<ActionResult<Salaries>> GetSalary(int id)
         {
             var salary = await _context.Salaries.FindAsync(id);
 
@@ -36,7 +36,7 @@ namespace EntityFrameworkCore_2.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSalary(int id, Salary salary)
+        public async Task<IActionResult> PutSalary(int id, Salaries salary)
         {
             if (id != salary.Id)
             {
@@ -65,7 +65,7 @@ namespace EntityFrameworkCore_2.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Salary>> PostSalary(Salary salary)
+        public async Task<ActionResult<Salaries>> PostSalary(Salaries salary)
         {
             _context.Salaries.Add(salary);
             await _context.SaveChangesAsync();
