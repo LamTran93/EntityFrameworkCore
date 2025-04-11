@@ -1,29 +1,29 @@
-﻿using EntityFrameworkCore_2.Application.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
 using EntityFrameworkCore_2.Dtos;
 using EntityFrameworkCore_2.Exeptions;
-using Microsoft.AspNetCore.Mvc;
+using EntityFrameworkCore_2.Application.Interfaces;
 
 namespace EntityFrameworkCore_2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SalariesController : ControllerBase
+    public class ProjectEmployeesController : ControllerBase
     {
-        private readonly ISalariesService _service;
+        private readonly IProjectEmployeeService _service;
 
-        public SalariesController(ISalariesService service)
+        public ProjectEmployeesController(IProjectEmployeeService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SalariesDto>>> GetSalaries()
+        public async Task<ActionResult<IEnumerable<ProjectEmployeeDto>>> GetProjectEmployees()
         {
             try
             {
-                var salaries = await _service.GetAllSalariesAsync();
+                var projectEmployees = await _service.GetAllProjectEmployeesAsync();
 
-                return salaries.Select(s => new SalariesDto(s)).ToList();
+                return projectEmployees.Select(pe => new ProjectEmployeeDto(pe)).ToList();
             }
             catch (Exception)
             {
@@ -32,12 +32,12 @@ namespace EntityFrameworkCore_2.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<SalariesDto>> GetSalary(int id)
+        public async Task<ActionResult<ProjectEmployeeDto>> GetProjectEmployee(int id)
         {
             try
             {
-                var salary = await _service.GetSalariesByIdAsync(id);
-                return new SalariesDto(salary);
+                var projectEmployee = await _service.GetProjectEmployeeByIdAsync(id);
+                return new ProjectEmployeeDto(projectEmployee);
             }
             catch (NotFoundException ex)
             {
@@ -50,16 +50,16 @@ namespace EntityFrameworkCore_2.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSalary(int id, SalariesDto salary)
+        public async Task<IActionResult> PutProjectEmployee(int id, ProjectEmployeeDto projectEmployee)
         {
-            if (id != salary.Id)
+            if (id != projectEmployee.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                await _service.UpdateSalariesAsync(salary.ToSalaries());
+                await _service.UpdateProjectEmployeeAsync(projectEmployee.ToProjectEmployee());
                 return NoContent();
             }
             catch (NotFoundException ex)
@@ -73,13 +73,13 @@ namespace EntityFrameworkCore_2.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<SalariesDto>> PostSalary(SalariesDto salary)
+        public async Task<ActionResult<ProjectEmployeeDto>> PostProjectEmployee(ProjectEmployeeDto projectEmployee)
         {
             try
             {
-                var createdSalaries =
-                    await _service.AddSalariesAsync(salary.ToSalariesWithoutId());
-                return CreatedAtAction("GetSalaries", new { id = createdSalaries.Id }, new SalariesDto(createdSalaries));
+                var createdProjectEmployee =
+                    await _service.AddProjectEmployeeAsync(projectEmployee.ToProjectEmployeeWithoutId());
+                return CreatedAtAction("GetProjectEmployee", new { id = createdProjectEmployee.Id }, new ProjectEmployeeDto(createdProjectEmployee));
             }
             catch (Exception)
             {
@@ -88,11 +88,11 @@ namespace EntityFrameworkCore_2.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSalary(int id)
+        public async Task<IActionResult> DeleteProjectEmployee(int id)
         {
             try
             {
-                await _service.DeleteSalariesAsync(id);
+                await _service.DeleteProjectEmployeeAsync(id);
                 return NoContent();
             }
             catch (NotFoundException ex)

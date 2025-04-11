@@ -2,8 +2,6 @@
 using EntityFrameworkCore_2.Dtos;
 using EntityFrameworkCore_2.Exeptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Repositories.Models;
 
 namespace EntityFrameworkCore_2.Controllers
 {
@@ -41,9 +39,9 @@ namespace EntityFrameworkCore_2.Controllers
                 var project = await _service.GetProjectByIdAsync(id);
                 return new ProjectDto(project);
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
             catch (Exception)
             {
@@ -81,7 +79,7 @@ namespace EntityFrameworkCore_2.Controllers
             {
                 var createdProject =
                     await _service.AddProjectAsync(project.ToProjectWithoutId());
-                return CreatedAtAction("GetProject", new { id = createdProject.Id }, createdProject);
+                return CreatedAtAction("GetProject", new { id = createdProject.Id }, new ProjectDto(createdProject));
             }
             catch (Exception)
             {

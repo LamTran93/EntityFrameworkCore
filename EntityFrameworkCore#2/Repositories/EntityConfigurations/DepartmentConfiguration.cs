@@ -12,8 +12,7 @@ namespace EntityFrameworkCore_2.Repositories.EntityConfigurations
 
             builder.HasMany(d => d.Employees)
                 .WithOne(e => e.Department)
-                .HasForeignKey(d => d.Id)
-                .IsRequired()
+                .HasForeignKey(e => e.DepartmentId)
                 .OnDelete(DeleteBehavior.Cascade);
             builder.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("getutcdate()");

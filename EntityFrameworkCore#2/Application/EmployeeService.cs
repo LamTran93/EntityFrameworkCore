@@ -69,7 +69,8 @@ namespace EntityFrameworkCore_2.Application
         public async Task<List<Employee>> GetEmployeesUseSalaryAndJoinedDateAsync()
         {
             return await _context.Employees
-                .FromSql($"SELECT * FROM dbo.Employees as e LEFT JOIN dbo.Salaries as s ON e.Id = s.EmployeeId WHERE e.JoinedDate >= 01/01/2024 AND s.Salary > 100")
+                .FromSql($"SELECT e.* FROM dbo.Employees as e LEFT JOIN dbo.Salaries as s ON e.Id = s.EmployeeId WHERE e.JoinedDate >= '01/01/2024' AND s.Salary > 100")
+                .Include(e => e.Salary)
                 .ToListAsync();
         }
     }

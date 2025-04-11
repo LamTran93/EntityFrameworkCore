@@ -39,9 +39,9 @@ namespace EntityFrameworkCore_2.Controllers
                 var department = await _service.GetDepartmentByIdAsync(id);
                 return new DepartmentDto(department);
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
             catch (Exception)
             {
@@ -78,8 +78,8 @@ namespace EntityFrameworkCore_2.Controllers
             try
             {
                 var createdDepartment = 
-                    await _service.AddDepartmentAsync(department.ToDepartment());
-                return CreatedAtAction("GetDepartment", new { id = createdDepartment.Id }, createdDepartment);
+                    await _service.AddDepartmentAsync(department.ToDepartmentWithoutId());
+                return CreatedAtAction("GetDepartment", new { id = createdDepartment.Id }, new DepartmentDto(createdDepartment));
             }
             catch (Exception)
             {

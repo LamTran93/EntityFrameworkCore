@@ -11,5 +11,6 @@ namespace EntityFrameworkCore_2.Application.Interfaces
         public Task DeleteEmployeeAsync(int id);
         public Task<List<Employee>> GetAllEmployeesWithDepartmentAsync();
         public Task<List<Employee>> GetAllEmployeesWithProjectsAsync();
+        public Task<List<Employee>> GetEmployeesUseSalaryAndJoinedDateAsync();
     }
 }

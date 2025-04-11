@@ -7,6 +7,8 @@ namespace EntityFrameworkCore_2.Dtos
         public int Id { get; set; }
         public string Name { get; set; }
 
+        public ProjectDto() { }
+
         public ProjectDto(Project project)
         {
             Id = project.Id;

@@ -1,5 +1,4 @@
 ﻿using EntityFrameworkCore_2.Domain.Models;
-using EntityFrameworkCore_2.Repositories.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.Contexts

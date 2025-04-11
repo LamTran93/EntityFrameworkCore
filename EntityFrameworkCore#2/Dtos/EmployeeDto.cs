@@ -1,5 +1,4 @@
 ﻿using EntityFrameworkCore_2.Domain.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace EntityFrameworkCore_2.Dtos
 {
@@ -9,6 +8,8 @@ namespace EntityFrameworkCore_2.Dtos
         public string Name { get; set; }
         public int DepartmentId { get; set; }
         public DateTime JoinedDate { get; set; }
+
+        public EmployeeDto() { }
 
         public EmployeeDto(Employee employee)
         {

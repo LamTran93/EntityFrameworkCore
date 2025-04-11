@@ -12,8 +12,8 @@ using Repositories.Contexts;
 namespace EntityFrameworkCore_2.Migrations
 {
     [DbContext(typeof(CompanyContext))]
-    [Migration("20250410183654_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250411041539_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace EntityFrameworkCore_2.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Repositories.Models.Department", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -83,11 +83,13 @@ namespace EntityFrameworkCore_2.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Repositories.Models.Employee", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -112,10 +114,12 @@ namespace EntityFrameworkCore_2.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.ToTable("Employees", (string)null);
                 });
 
-            modelBuilder.Entity("Repositories.Models.Project", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -143,7 +147,7 @@ namespace EntityFrameworkCore_2.Migrations
                     b.ToTable("Projects", (string)null);
                 });
 
-            modelBuilder.Entity("Repositories.Models.ProjectEmployee", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.ProjectEmployee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -160,7 +164,8 @@ namespace EntityFrameworkCore_2.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("Enable");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -179,11 +184,13 @@ namespace EntityFrameworkCore_2.Migrations
                     b.ToTable("Project_Employee", (string)null);
                 });
 
-            modelBuilder.Entity("Repositories.Models.Salaries", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.Salaries", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -203,29 +210,32 @@ namespace EntityFrameworkCore_2.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
                     b.ToTable("Salaries", (string)null);
                 });
 
-            modelBuilder.Entity("Repositories.Models.Employee", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.Employee", b =>
                 {
-                    b.HasOne("Repositories.Models.Department", "Department")
+                    b.HasOne("EntityFrameworkCore_2.Domain.Models.Department", "Department")
                         .WithMany("Employees")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("Repositories.Models.ProjectEmployee", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.ProjectEmployee", b =>
                 {
-                    b.HasOne("Repositories.Models.Employee", "Employee")
+                    b.HasOne("EntityFrameworkCore_2.Domain.Models.Employee", "Employee")
                         .WithMany("ProjectEmployees")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Repositories.Models.Project", "Project")
+                    b.HasOne("EntityFrameworkCore_2.Domain.Models.Project", "Project")
                         .WithMany("ProjectEmployees")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -236,23 +246,23 @@ namespace EntityFrameworkCore_2.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("Repositories.Models.Salaries", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.Salaries", b =>
                 {
-                    b.HasOne("Repositories.Models.Employee", "Employee")
+                    b.HasOne("EntityFrameworkCore_2.Domain.Models.Employee", "Employee")
                         .WithOne("Salary")
-                        .HasForeignKey("Repositories.Models.Salaries", "Id")
+                        .HasForeignKey("EntityFrameworkCore_2.Domain.Models.Salaries", "EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("Repositories.Models.Department", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.Department", b =>
                 {
                     b.Navigation("Employees");
                 });
 
-            modelBuilder.Entity("Repositories.Models.Employee", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.Employee", b =>
                 {
                     b.Navigation("ProjectEmployees");
 
@@ -260,7 +270,7 @@ namespace EntityFrameworkCore_2.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Repositories.Models.Project", b =>
+            modelBuilder.Entity("EntityFrameworkCore_2.Domain.Models.Project", b =>
                 {
                     b.Navigation("ProjectEmployees");
                 });

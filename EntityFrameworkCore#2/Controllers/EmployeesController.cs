@@ -1,4 +1,5 @@
 ﻿using EntityFrameworkCore_2.Application.Interfaces;
+using EntityFrameworkCore_2.Domain.Models;
 using EntityFrameworkCore_2.Dtos;
 using EntityFrameworkCore_2.Exeptions;
 using Microsoft.AspNetCore.Mvc;
@@ -39,9 +40,9 @@ namespace EntityFrameworkCore_2.Controllers
                 var employee = await _service.GetEmployeeByIdAsync(id);
                 return new EmployeeDto(employee);
             }
-            catch (NotFoundException)
+            catch (NotFoundException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
             catch (Exception)
             {
@@ -79,7 +80,7 @@ namespace EntityFrameworkCore_2.Controllers
             {
                 var createdEmployee = 
                     await _service.AddEmployeeAsync(employee.ToEmployeeWithoutId());
-                return CreatedAtAction("GetEmployee", new { id = createdEmployee.Id }, createdEmployee);
+                return CreatedAtAction("GetEmployee", new { id = createdEmployee.Id }, new EmployeeDto(createdEmployee));
             }
             catch (Exception)
             {
@@ -98,6 +99,49 @@ namespace EntityFrameworkCore_2.Controllers
             catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("withDepartment")]
+        public async Task<ActionResult<IEnumerable<FullEmployeeDto>>> GetEmployeesWithDepartment()
+        {
+            try
+            {
+                var employees = await _service.GetAllEmployeesWithDepartmentAsync();
+                return employees.Select(e => new FullEmployeeDto(e)).ToList();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("withProjects")]
+        public async Task<ActionResult<IEnumerable<FullEmployeeDto>>> GetEmployeesWithProjects()
+        {
+            try
+            {
+                var employees = await _service.GetAllEmployeesWithProjectsAsync();
+                return employees.Select(e => new FullEmployeeDto(e)).ToList();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("withConditions")]
+        public async Task<ActionResult<IEnumerable<FullEmployeeDto>>> GetEmployeesWithConditions()
+        {
+            try
+            {
+                var employees = await _service.GetEmployeesUseSalaryAndJoinedDateAsync();
+                
+                return employees.Select(e => new FullEmployeeDto(e)).ToList();
             }
             catch (Exception)
             {

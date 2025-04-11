@@ -8,6 +8,8 @@ namespace EntityFrameworkCore_2.Dtos
         public decimal Salary { get; set; }
         public int EmployeeId { get; set; }
 
+        public SalariesDto() { }
+
         public SalariesDto(Salaries salary)
         {
             Id = salary.Id;
