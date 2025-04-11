@@ -23,7 +23,7 @@ namespace EntityFrameworkCore_2.Controllers
             {
                 var salaries = await _service.GetAllSalariesAsync();
 
-                return salaries.Select(s => new SalariesDto(s)).ToList();
+                return Ok(salaries.Select(s => new SalariesDto(s)).ToList());
             }
             catch (Exception)
             {
@@ -37,7 +37,7 @@ namespace EntityFrameworkCore_2.Controllers
             try
             {
                 var salary = await _service.GetSalariesByIdAsync(id);
-                return new SalariesDto(salary);
+                return Ok(new SalariesDto(salary));
             }
             catch (NotFoundException ex)
             {

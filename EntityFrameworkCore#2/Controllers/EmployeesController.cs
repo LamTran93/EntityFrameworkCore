@@ -24,7 +24,7 @@ namespace EntityFrameworkCore_2.Controllers
             {
                 var employees = await _service.GetAllEmployeesAsync();
 
-                return employees.Select(e => new EmployeeDto(e)).ToList();
+                return Ok(employees.Select(e => new EmployeeDto(e)).ToList());
             }
             catch (Exception)
             {
@@ -38,7 +38,7 @@ namespace EntityFrameworkCore_2.Controllers
             try
             {
                 var employee = await _service.GetEmployeeByIdAsync(id);
-                return new EmployeeDto(employee);
+                return Ok(new EmployeeDto(employee));
             }
             catch (NotFoundException ex)
             {
@@ -112,7 +112,7 @@ namespace EntityFrameworkCore_2.Controllers
             try
             {
                 var employees = await _service.GetAllEmployeesWithDepartmentAsync();
-                return employees.Select(e => new FullEmployeeDto(e)).ToList();
+                return Ok(employees.Select(e => new FullEmployeeDto(e)).ToList());
             }
             catch (Exception)
             {
@@ -126,7 +126,7 @@ namespace EntityFrameworkCore_2.Controllers
             try
             {
                 var employees = await _service.GetAllEmployeesWithProjectsAsync();
-                return employees.Select(e => new FullEmployeeDto(e)).ToList();
+                return Ok(employees.Select(e => new FullEmployeeDto(e)).ToList());
             }
             catch (Exception)
             {
@@ -141,7 +141,7 @@ namespace EntityFrameworkCore_2.Controllers
             {
                 var employees = await _service.GetEmployeesUseSalaryAndJoinedDateAsync();
                 
-                return employees.Select(e => new FullEmployeeDto(e)).ToList();
+                return Ok(employees.Select(e => new FullEmployeeDto(e)).ToList());
             }
             catch (Exception)
             {

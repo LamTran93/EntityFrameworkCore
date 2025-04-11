@@ -23,7 +23,7 @@ namespace EntityFrameworkCore_2.Controllers
             {
                 var departments = await _service.GetAllDepartmentsAsync();
 
-                return departments.Select(d => new DepartmentDto(d)).ToList();
+                return Ok(departments.Select(d => new DepartmentDto(d)).ToList());
             }
             catch (Exception)
             {
@@ -37,7 +37,7 @@ namespace EntityFrameworkCore_2.Controllers
             try
             {
                 var department = await _service.GetDepartmentByIdAsync(id);
-                return new DepartmentDto(department);
+                return Ok(new DepartmentDto(department));
             }
             catch (NotFoundException ex)
             {

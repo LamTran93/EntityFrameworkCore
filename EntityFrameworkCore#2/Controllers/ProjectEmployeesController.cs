@@ -23,7 +23,7 @@ namespace EntityFrameworkCore_2.Controllers
             {
                 var projectEmployees = await _service.GetAllProjectEmployeesAsync();
 
-                return projectEmployees.Select(pe => new ProjectEmployeeDto(pe)).ToList();
+                return Ok(projectEmployees.Select(pe => new ProjectEmployeeDto(pe)).ToList());
             }
             catch (Exception)
             {
@@ -37,7 +37,7 @@ namespace EntityFrameworkCore_2.Controllers
             try
             {
                 var projectEmployee = await _service.GetProjectEmployeeByIdAsync(id);
-                return new ProjectEmployeeDto(projectEmployee);
+                return Ok(new ProjectEmployeeDto(projectEmployee));
             }
             catch (NotFoundException ex)
             {
